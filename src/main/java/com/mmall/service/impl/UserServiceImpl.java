@@ -97,7 +97,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken){
-        if (StringUtils.isNotBlank(forgetToken)){
+        if (StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("参数错误，token需要传递");
         }
         ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
