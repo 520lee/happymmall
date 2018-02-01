@@ -104,6 +104,7 @@ public class UserController {
         user.setId(currentUser.getId());
         ServerResponse<User> response = iUserService.updateInformation(user);
         if (response.isSuccess()){
+            response.getData().setUsername(currentUser.getUsername());
             session.setAttribute(Const.CURRENT_USER,response.getData());
         }
         return response;
