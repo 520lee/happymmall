@@ -1,6 +1,5 @@
 package com.mmall.controller.backend;
 
-import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
@@ -8,7 +7,7 @@ import com.mmall.service.ICategoryService;
 import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/manage/category")
@@ -34,7 +32,7 @@ public class CategoryManageController {
     public ServerResponse addCategory(HttpServletRequest httpServletRequest, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                 //是管理员，处理分类逻辑
@@ -53,7 +51,7 @@ public class CategoryManageController {
     public ServerResponse setCategoryName(HttpServletRequest httpServletRequest, Integer categoryId, String categoryName){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //是管理员，更新categoryName
@@ -72,7 +70,7 @@ public class CategoryManageController {
     public ServerResponse getChildrenParallelCategory (HttpServletRequest httpServletRequest, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //是管理员，查询子节点的category信息，并且不递归，保证平级
@@ -91,7 +89,7 @@ public class CategoryManageController {
     public ServerResponse getCategoryAndDeepChildrenCategory(HttpServletRequest httpServletRequest, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //是管理员，查询当前节点的id和递归子节点的id

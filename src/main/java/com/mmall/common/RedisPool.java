@@ -11,8 +11,8 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisPool {
     private static JedisPool pool;
-    private static Integer port = Integer.parseInt(PropertiesUtil.getProperty("redis.port", "6379"));
-    private static String host = PropertiesUtil.getProperty("redis.ip", "118.190.158.81");
+    private static Integer port = Integer.parseInt(PropertiesUtil.getProperty("redis1.port", "6379"));
+    private static String host = PropertiesUtil.getProperty("redis1.ip", "118.190.158.81");
     private static Integer maxTotal = Integer.parseInt(PropertiesUtil.getProperty("redis.max.total", "20"));
     private static Integer maxIdel = Integer.parseInt(PropertiesUtil.getProperty("redis.max.idel", "10"));
     private static Integer minIdel = Integer.parseInt(PropertiesUtil.getProperty("redis.min.idel", "2"));

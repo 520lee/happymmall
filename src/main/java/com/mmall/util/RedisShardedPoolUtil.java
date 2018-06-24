@@ -5,27 +5,27 @@ package com.mmall.util;
 */
 
 
-import com.mmall.common.RedisPool;
-import redis.clients.jedis.Jedis;
+import com.mmall.common.RedisShardedPool;
+import redis.clients.jedis.ShardedJedis;
 
-public class RedisPoolUtil {
+public class RedisShardedPoolUtil {
     public static String set(String key, String value){
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         String result = null;
 
-        jedis = RedisPool.getJedis();
+        jedis = RedisShardedPool.getJedis();
         result = jedis.set(key, value);
-        RedisPool.returnResource(jedis);
+        RedisShardedPool.returnResource(jedis);
         return result;
     }
 
     public static String setEx(String key, String value, int exTime){
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         String result = null;
 
-        jedis = RedisPool.getJedis();
+        jedis = RedisShardedPool.getJedis();
         result = jedis.setex(key, exTime, value);
-        RedisPool.returnResource(jedis);
+        RedisShardedPool.returnResource(jedis);
         return result;
     }
 
@@ -36,32 +36,32 @@ public class RedisPoolUtil {
      * @return
      */
     public static Long setExpire(String key, int exTime){
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         Long result = null;
 
-        jedis = RedisPool.getJedis();
+        jedis = RedisShardedPool.getJedis();
         result = jedis.expire(key, exTime);
-        RedisPool.returnResource(jedis);
+        RedisShardedPool.returnResource(jedis);
         return result;
     }
 
     public static Long del(String key){
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         Long result = null;
 
-        jedis = RedisPool.getJedis();
+        jedis = RedisShardedPool.getJedis();
         result = jedis.del(key);
-        RedisPool.returnResource(jedis);
+        RedisShardedPool.returnResource(jedis);
         return result;
     }
 
     public static String get(String key){
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         String result = null;
 
-        jedis = RedisPool.getJedis();
+        jedis = RedisShardedPool.getJedis();
         result = jedis.get(key);
-        RedisPool.returnResource(jedis);
+        RedisShardedPool.returnResource(jedis);
         return result;
     }
 }

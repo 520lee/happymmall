@@ -7,7 +7,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.ICartService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import com.mmall.vo.CartVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/cart/")
@@ -30,7 +29,7 @@ public class CartController {
     public ServerResponse<CartVo> list(HttpServletRequest httpServletRequest){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.list(user.getId());
             }
@@ -43,7 +42,7 @@ public class CartController {
     public ServerResponse<CartVo> add(HttpServletRequest httpServletRequest, Integer count, Integer productId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.add(user.getId(),productId,count);
             }
@@ -56,7 +55,7 @@ public class CartController {
     public ServerResponse<CartVo> update(HttpServletRequest httpServletRequest, Integer count, Integer productId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.update(user.getId(),productId,count);
             }
@@ -69,7 +68,7 @@ public class CartController {
     public ServerResponse<CartVo> deleteProduct(HttpServletRequest httpServletRequest, String productIds){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.deleteProduct(user.getId(),productIds);
             }
@@ -83,7 +82,7 @@ public class CartController {
     public ServerResponse<CartVo> selectAll(HttpServletRequest httpServletRequest){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.selectOrUnSelect(user.getId(), null, Const.Cart.CHECKED);
             }
@@ -96,7 +95,7 @@ public class CartController {
     public ServerResponse<CartVo> unSelectAll(HttpServletRequest httpServletRequest) {
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.selectOrUnSelect(user.getId(), null, Const.Cart.UN_CHECKED);
             }
@@ -109,7 +108,7 @@ public class CartController {
     public ServerResponse<CartVo> select(HttpServletRequest httpServletRequest, Integer productId) {
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.selectOrUnSelect(user.getId(), productId, Const.Cart.CHECKED);
             }
@@ -122,7 +121,7 @@ public class CartController {
     public ServerResponse<CartVo> unSelect(HttpServletRequest httpServletRequest, Integer productId) {
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.selectOrUnSelect(user.getId(), productId, Const.Cart.UN_CHECKED);
             }
@@ -136,7 +135,7 @@ public class CartController {
     public ServerResponse<Integer> getCartProductCount(HttpServletRequest httpServletRequest){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iCartService.getCartProductCount(user.getId());
             }

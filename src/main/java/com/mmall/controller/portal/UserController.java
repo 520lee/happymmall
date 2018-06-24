@@ -7,7 +7,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +38,7 @@ public class UserController {
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()){
             CookieUtil.writeLoginToken(httpServletResponse, session.getId());
-            RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }
@@ -48,7 +48,7 @@ public class UserController {
     public ServerResponse<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
         String key = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(key)){
-            RedisPoolUtil.del(key);
+            RedisShardedPoolUtil.del(key);
             CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
             return ServerResponse.createBySuccess();
         }
@@ -72,7 +72,7 @@ public class UserController {
     public ServerResponse<User> getUserInfo(HttpServletRequest httpServletRequest){
         String key = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(key)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(key), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(key), User.class);
             if (user != null){
                 return ServerResponse.createBySuccess(user);
             }
@@ -103,7 +103,7 @@ public class UserController {
     public ServerResponse<String> resetPassword(HttpServletRequest httpServletRequest, String passwordOld, String passwordNew){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iUserService.resetPassword(passwordOld, passwordNew, user);
             }
@@ -116,13 +116,13 @@ public class UserController {
     public ServerResponse<User> update_information(HttpServletRequest httpServletRequest, User user){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User currentUser = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User currentUser = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (currentUser != null){
                 user.setId(currentUser.getId());
                 ServerResponse<User> response = iUserService.updateInformation(user);
                 if (response.isSuccess()){
                     response.getData().setUsername(currentUser.getUsername());
-                    RedisPoolUtil.set(login_token, JsonUtil.obj2String(response.getData()));
+                    RedisShardedPoolUtil.set(login_token, JsonUtil.obj2String(response.getData()));
                 }
                 return response;
             }
@@ -135,7 +135,7 @@ public class UserController {
     public ServerResponse<User> get_information(HttpServletRequest httpServletRequest){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = (JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class));
+            User user = (JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class));
             if (user != null){
                 return iUserService.getinformation(user.getId());
             }

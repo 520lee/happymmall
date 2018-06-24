@@ -1,7 +1,6 @@
 package com.mmall.controller.backend;
 
 import com.google.common.collect.Maps;
-import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
@@ -12,7 +11,7 @@ import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
 import com.mmall.util.PropertiesUtil;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Controller
@@ -44,7 +42,7 @@ public class ProductManageController {
     public ServerResponse productSave(HttpServletRequest httpServletRequest, Product product){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //增加产品的业务逻辑
@@ -62,7 +60,7 @@ public class ProductManageController {
     public ServerResponse setSaleStatus(HttpServletRequest httpServletRequest, Integer productId, Integer status){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //填充业务
@@ -80,7 +78,7 @@ public class ProductManageController {
     public ServerResponse getDetail(HttpServletRequest httpServletRequest, Integer productId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //填充业务
@@ -98,7 +96,7 @@ public class ProductManageController {
     public ServerResponse getList(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10")int pageSize){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //填充业务
@@ -116,7 +114,7 @@ public class ProductManageController {
     public ServerResponse productSearch(HttpServletRequest httpServletRequest, String productName, Integer productId, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10")int pageSize){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //填充业务
@@ -134,7 +132,7 @@ public class ProductManageController {
     public ServerResponse upload(HttpServletRequest httpServletRequest, @RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //填充业务
@@ -160,7 +158,7 @@ public class ProductManageController {
         Map resultMap = Maps.newHashMap();
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 if (iUserService.checkAdminRole(user).isSuccess()){
                     //填充业务

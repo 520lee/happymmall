@@ -1,7 +1,6 @@
 package com.mmall.controller.portal;
 
 import com.github.pagehelper.PageInfo;
-import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Shipping;
@@ -9,7 +8,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.IShippingService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/shipping/")
@@ -32,7 +30,7 @@ public class ShippingController {
     public ServerResponse add(HttpServletRequest httpServletRequest, Shipping shipping){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iShippingService.add(user.getId(),shipping);
             }
@@ -45,7 +43,7 @@ public class ShippingController {
     public ServerResponse delete(HttpServletRequest httpServletRequest, Integer shippingId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iShippingService.delete(user.getId(),shippingId);
             }
@@ -58,7 +56,7 @@ public class ShippingController {
     public ServerResponse update(HttpServletRequest httpServletRequest, Shipping shipping){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iShippingService.update(user.getId(),shipping);
             }
@@ -71,7 +69,7 @@ public class ShippingController {
     public ServerResponse<Shipping> select(HttpServletRequest httpServletRequest, Integer shippingId){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iShippingService.select(user.getId(),shippingId);
             }
@@ -84,7 +82,7 @@ public class ShippingController {
     public ServerResponse<PageInfo> list(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         String login_token = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtil.string2Obj(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtil.string2Obj(RedisShardedPoolUtil.get(login_token), User.class);
             if (user != null){
                 return iShippingService.list(user.getId(),pageNum,pageSize);
             }
