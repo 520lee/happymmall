@@ -9,6 +9,7 @@ import com.mmall.common.RedisShardedPool;
 import redis.clients.jedis.ShardedJedis;
 
 public class RedisShardedPoolUtil {
+
     public static String set(String key, String value){
         ShardedJedis jedis = null;
         String result = null;
@@ -19,12 +20,32 @@ public class RedisShardedPoolUtil {
         return result;
     }
 
+    public static Long setNx(String key, String value){
+        ShardedJedis jedis = null;
+        Long result = null;
+
+        jedis = RedisShardedPool.getJedis();
+        result = jedis.setnx(key, value);
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
     public static String setEx(String key, String value, int exTime){
         ShardedJedis jedis = null;
         String result = null;
 
         jedis = RedisShardedPool.getJedis();
         result = jedis.setex(key, exTime, value);
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    public static String getSet(String key, String value){
+        ShardedJedis jedis = null;
+        String result = null;
+
+        jedis = RedisShardedPool.getJedis();
+        result = jedis.getSet(key, value);
         RedisShardedPool.returnResource(jedis);
         return result;
     }
