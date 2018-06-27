@@ -41,7 +41,7 @@ public class CloseOrderTask {
         }
     }
 
-//    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void closeOrderTaskV3(){
         Long lockTimeout = Long.parseLong(PropertiesUtil.getProperty("lock.timeout", "5000"));
         Long setNxResult = RedisShardedPoolUtil.setNx(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, String.valueOf(System.currentTimeMillis() + lockTimeout));
@@ -64,7 +64,7 @@ public class CloseOrderTask {
         RedisShardedPoolUtil.del(lockName);
     }
 
-    @Scheduled(cron = "0 */1 * * * ?")
+//    @Scheduled(cron = "0 */1 * * * ?")
     public void closeOrderTaskV4(){
         RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         Boolean getLock =false;
@@ -72,11 +72,14 @@ public class CloseOrderTask {
             if (getLock = lock.tryLock(0,50, TimeUnit.SECONDS)){
                 int minutes = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.minutes", "30"));
                 iOrderService.closeOrder(minutes);
-                System.out.println("获取锁");
             }
         } catch (InterruptedException e) {
-            System.out.println("获取失败");
             e.printStackTrace();
+        } finally {
+            if (!getLock){
+                return;
+            }
+            lock.unlock();
         }
     }
 }
